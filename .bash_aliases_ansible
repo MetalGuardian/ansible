@@ -42,6 +42,7 @@ __ansible() {
     -ti \
     --env TERM=${TERM} \
     --env SSH_AUTH_SOCK=/ssh-agent \
+    --env ANSIBLE_SSH_ARGS \ 
     --user=`id -u`:`id -g` \
     --init \
     --net host \
@@ -58,12 +59,15 @@ __ansible() {
 }
 
 __ansible_playbook() {
+    env
+    return 0
     local arguments="$@"
     docker run \
     --rm \
     -ti \
     --env TERM=${TERM} \
     --env SSH_AUTH_SOCK=/ssh-agent \
+    --env ANSIBLE_SSH_ARGS \
     --user=`id -u`:`id -g` \
     --init \
     --net host \
@@ -86,6 +90,7 @@ __ansible_galaxy() {
     -ti \
     --env TERM=${TERM} \
     --env SSH_AUTH_SOCK=/ssh-agent \
+    --env ANSIBLE_SSH_ARGS \
     --user=`id -u`:`id -g` \
     --init \
     --net host \
@@ -108,6 +113,7 @@ __ansible_vault() {
     -ti \
     --env TERM=${TERM} \
     --env SSH_AUTH_SOCK=/ssh-agent \
+    --env ANSIBLE_SSH_ARGS \
     --user=`id -u`:`id -g` \
     --init \
     --net host \
@@ -130,6 +136,7 @@ __ansible_doc() {
     -ti \
     --env TERM=${TERM} \
     --env SSH_AUTH_SOCK=/ssh-agent \
+    --env ANSIBLE_SSH_ARGS \
     --user=`id -u`:`id -g` \
     --init \
     --net host \
