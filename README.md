@@ -25,4 +25,4 @@ ansible-doc
 
 ```
 
-The editor for the `ansible-vault create` command is nano 
+The editor for the `ansible-vault create` command is vi 
