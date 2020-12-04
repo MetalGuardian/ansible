@@ -6,11 +6,7 @@
 # remove container after command complete
 # allocate a pseudo-tty, keep STDIN open even if not attached
 # mounting current directory as ansible working directory
-# mounting passwd and group files, so command is executed 
 # mounting ssh configuration of current user to the container, read only
-# ansible image name
-# command which will be running in container (ansible, ansible-playbook, ansible-galaxy, ansible-vault)
-# command arguments, gathered from user input
 #
 # To use these:
 #
@@ -33,121 +29,117 @@ __pre_configuration() {
     mkdir -p $HOME/.ssh
     touch $HOME/.ssh/config
     touch $HOME/.ssh/known_hosts
-    docker pull metalguardian/ansible
+    if test -z "$(docker images -q metalguardian/ansible:latest)"; then
+        docker pull --quiet metalguardian/ansible:latest
+    fi
 }
 
 __ansible() {
     local arguments="$@"
     docker run \
-    --rm \
-    -ti \
-    --env TERM=${TERM} \
-    --env SSH_AUTH_SOCK=/ssh-agent \
-    --env ANSIBLE_SSH_ARGS \ 
-    --env HOME \
-    --user=`id -u`:`id -g` \
-    --init \
-    --net host \
-    -v ${HOME}/.ansible:${HOME}/.ansible \
-    -v ${HOME}/.ssh/config:${HOME}/.ssh/config \
-    -v ${HOME}/.ssh/known_hosts:${HOME}/.ssh/known_hosts \
-    -v $(pwd):$(pwd) -w $(pwd) \
-    -v $SSH_AUTH_SOCK:/ssh-agent \
-    metalguardian/ansible \
-    ansible \
-    ${arguments}
+        --rm \
+        -ti \
+        --env TERM \
+        --env SSH_AUTH_SOCK \
+        --env ANSIBLE_SSH_ARGS \
+        --env HOME \
+        --user=`id -u`:`id -g` \
+        --init \
+        --net host \
+        -v ${HOME}/.ansible:${HOME}/.ansible \
+        -v ${HOME}/.ssh/config:${HOME}/.ssh/config \
+        -v ${HOME}/.ssh/known_hosts:${HOME}/.ssh/known_hosts \
+        -v $(pwd):$(pwd) -w $(pwd) \
+        -v $SSH_AUTH_SOCK:$SSH_AUTH_SOCK \
+        metalguardian/ansible \
+        ansible \
+        ${arguments}
 }
 
 __ansible_playbook() {
-    env
-    return 0
     local arguments="$@"
     docker run \
-    --rm \
-    -ti \
-    --env TERM=${TERM} \
-    --env SSH_AUTH_SOCK=/ssh-agent \
-    --env ANSIBLE_SSH_ARGS \
-    --user=`id -u`:`id -g` \
-    --init \
-    --net host \
-    -v /etc/passwd:/etc/passwd:ro \
-    -v /etc/group:/etc/group:ro \
-    -v ${HOME}/.ansible:${HOME}/.ansible \
-    -v ${HOME}/.ssh/config:${HOME}/.ssh/config \
-    -v ${HOME}/.ssh/known_hosts:${HOME}/.ssh/known_hosts \
-    -v $(pwd):$(pwd) -w $(pwd) \
-    -v $SSH_AUTH_SOCK:/ssh-agent \
-    metalguardian/ansible \
-    ansible-playbook \
-    ${arguments}
+        --rm \
+        -ti \
+        --env TERM \
+        --env SSH_AUTH_SOCK \
+        --env ANSIBLE_SSH_ARGS \
+        --env HOME \
+        --user=`id -u`:`id -g` \
+        --init \
+        --net host \
+        -v ${HOME}/.ansible:${HOME}/.ansible \
+        -v ${HOME}/.ssh/config:${HOME}/.ssh/config \
+        -v ${HOME}/.ssh/known_hosts:${HOME}/.ssh/known_hosts \
+        -v $(pwd):$(pwd) -w $(pwd) \
+        -v $SSH_AUTH_SOCK:$SSH_AUTH_SOCK \
+        metalguardian/ansible \
+        ansible-playbook \
+        ${arguments}
 }
 
 __ansible_galaxy() {
     local arguments="$@"
     docker run \
-    --rm \
-    -ti \
-    --env TERM=${TERM} \
-    --env SSH_AUTH_SOCK=/ssh-agent \
-    --env ANSIBLE_SSH_ARGS \
-    --user=`id -u`:`id -g` \
-    --init \
-    --net host \
-    -v /etc/passwd:/etc/passwd:ro \
-    -v /etc/group:/etc/group:ro \
-    -v ${HOME}/.ansible:${HOME}/.ansible \
-    -v ${HOME}/.ssh/config:${HOME}/.ssh/config \
-    -v ${HOME}/.ssh/known_hosts:${HOME}/.ssh/known_hosts \
-    -v $(pwd):$(pwd) -w $(pwd) \
-    -v $SSH_AUTH_SOCK:/ssh-agent \
-    metalguardian/ansible \
-    ansible-galaxy \
-    ${arguments}
+        --rm \
+        -ti \
+        --env TERM \
+        --env SSH_AUTH_SOCK \
+        --env ANSIBLE_SSH_ARGS \
+        --env HOME \
+        --user=`id -u`:`id -g` \
+        --init \
+        --net host \
+        -v ${HOME}/.ansible:${HOME}/.ansible \
+        -v ${HOME}/.ssh/config:${HOME}/.ssh/config \
+        -v ${HOME}/.ssh/known_hosts:${HOME}/.ssh/known_hosts \
+        -v $(pwd):$(pwd) -w $(pwd) \
+        -v $SSH_AUTH_SOCK:$SSH_AUTH_SOCK \
+        metalguardian/ansible \
+        ansible-galaxy \
+        ${arguments}
 }
 
 __ansible_vault() {
     local arguments="$@"
     docker run \
-    --rm \
-    -ti \
-    --env TERM=${TERM} \
-    --env SSH_AUTH_SOCK=/ssh-agent \
-    --env ANSIBLE_SSH_ARGS \
-    --user=`id -u`:`id -g` \
-    --init \
-    --net host \
-    -v /etc/passwd:/etc/passwd:ro \
-    -v /etc/group:/etc/group:ro \
-    -v ${HOME}/.ansible:${HOME}/.ansible \
-    -v ${HOME}/.ssh/config:${HOME}/.ssh/config \
-    -v ${HOME}/.ssh/known_hosts:${HOME}/.ssh/known_hosts \
-    -v $(pwd):$(pwd) -w $(pwd) \
-    -v $SSH_AUTH_SOCK:/ssh-agent \
-    metalguardian/ansible \
-    ansible-vault \
-    ${arguments}
+        --rm \
+        -ti \
+        --env TERM \
+        --env SSH_AUTH_SOCK \
+        --env ANSIBLE_SSH_ARGS \
+        --env HOME \
+        --user=`id -u`:`id -g` \
+        --init \
+        --net host \
+        -v ${HOME}/.ansible:${HOME}/.ansible \
+        -v ${HOME}/.ssh/config:${HOME}/.ssh/config \
+        -v ${HOME}/.ssh/known_hosts:${HOME}/.ssh/known_hosts \
+        -v $(pwd):$(pwd) -w $(pwd) \
+        -v $SSH_AUTH_SOCK:$SSH_AUTH_SOCK \
+        metalguardian/ansible \
+        ansible-vault \
+        ${arguments}
 }
 
 __ansible_doc() {
     local arguments="$@"
     docker run \
-    --rm \
-    -ti \
-    --env TERM=${TERM} \
-    --env SSH_AUTH_SOCK=/ssh-agent \
-    --env ANSIBLE_SSH_ARGS \
-    --user=`id -u`:`id -g` \
-    --init \
-    --net host \
-    -v /etc/passwd:/etc/passwd:ro \
-    -v /etc/group:/etc/group:ro \
-    -v ${HOME}/.ansible:${HOME}/.ansible \
-    -v ${HOME}/.ssh/config:${HOME}/.ssh/config \
-    -v ${HOME}/.ssh/known_hosts:${HOME}/.ssh/known_hosts \
-    -v $(pwd):$(pwd) -w $(pwd) \
-    -v $SSH_AUTH_SOCK:/ssh-agent \
-    metalguardian/ansible \
-    ansible-doc \
-    ${arguments}
+        --rm \
+        -ti \
+        --env TERM \
+        --env SSH_AUTH_SOCK \
+        --env ANSIBLE_SSH_ARGS \
+        --env HOME \
+        --user=`id -u`:`id -g` \
+        --init \
+        --net host \
+        -v ${HOME}/.ansible:${HOME}/.ansible \
+        -v ${HOME}/.ssh/config:${HOME}/.ssh/config \
+        -v ${HOME}/.ssh/known_hosts:${HOME}/.ssh/known_hosts \
+        -v $(pwd):$(pwd) -w $(pwd) \
+        -v $SSH_AUTH_SOCK:$SSH_AUTH_SOCK \
+        metalguardian/ansible \
+        ansible-doc \
+        ${arguments}
 }
