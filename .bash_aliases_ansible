@@ -46,6 +46,8 @@ __ansible_docker_run_template() {
         --user=`id -u`:`id -g` \
         --init \
         --net host \
+        -v /etc/passwd:/etc/passwd:ro \
+        -v /etc/group:/etc/group:ro \
         -v ${HOME}/.ansible:${HOME}/.ansible \
         -v ${HOME}/.ssh/config:${HOME}/.ssh/config \
         -v ${HOME}/.ssh/known_hosts:${HOME}/.ssh/known_hosts \
