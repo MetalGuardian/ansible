@@ -36,7 +36,7 @@ __pre_configuration() {
 
 __ansible_docker_run_template() {
     local arguments="$@"
-    echo docker run \
+    docker run \
         --rm \
         -ti \
         --env TERM \
