@@ -25,6 +25,7 @@ alias ansible-vault="__pre_configuration && __ansible_docker_run_template ansibl
 alias ansible-doc="__pre_configuration && __ansible_docker_run_template ansible-doc"
 
 __pre_configuration() {
+    export ANSIBLE_SSH_ARGS
     mkdir -p $HOME/.ansible
     mkdir -p $HOME/.ssh
     touch $HOME/.ssh/config
