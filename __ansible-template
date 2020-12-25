@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+mkdir -p $HOME/.ansible
+mkdir -p $HOME/.ssh
+touch $HOME/.ssh/known_hosts
+if test -z "$(docker images -q metalguardian/ansible:latest)"; then
+    docker pull --quiet metalguardian/ansible:latest
+fi
+
+arguments="$@"
+
+exec docker run \
+    --rm \
+    -ti \
+    --env TERM \
+    --env SSH_AUTH_SOCK \
+    --env ANSIBLE_SSH_ARGS \
+    --env HOME \
+    --user=`id -u`:`id -g` \
+    --init \
+    --net host \
+    -v /etc/passwd:/etc/passwd:ro \
+    -v /etc/group:/etc/group:ro \
+    -v ${HOME}/.ansible:${HOME}/.ansible \
+    -v ${HOME}/.ssh/known_hosts:${HOME}/.ssh/known_hosts:ro \
+    -v $(pwd):$(pwd) -w $(pwd) \
+    -v $SSH_AUTH_SOCK:$SSH_AUTH_SOCK \
+    metalguardian/ansible \
+    ${arguments}

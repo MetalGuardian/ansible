@@ -1,8 +1,8 @@
 # docker-ansible
 
-Ansible docker image with prepared bash aliases
+Ansible docker image with prepared bash aliases and bash scripts
 
-To use these:
+You can use prepared bash aliases:
 
 1. Copy `.bash_aliases_ansible` file to somewhere (e.g. ~/.bash_aliases_ansible).
 2. Add the following line to your .bashrc/.zshrc: 
@@ -10,6 +10,9 @@ To use these:
 ```
 source ~/.bash_aliases_ansible
 ```
+
+Or add directory to the PATH (or symlink scripts)
+
 Then you can use commands:
 
 ```

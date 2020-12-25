@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+ORIGIN_PATH=$(dirname $(realpath "$0"))
+
+arguments="$@"
+exec ${ORIGIN_PATH}/__ansible-template ansible-vault ${arguments}
